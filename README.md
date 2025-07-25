@@ -1,98 +1,200 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🧠 E-Learning Backend API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This is the backend API for an E-Learning platform built using **NestJS**, **TypeORM**, and **MongoDB/PostgreSQL**. It supports user authentication, branch/institute management, and scalable address normalization.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## 🚀 Tech Stack
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Node.js** (Runtime Environment)
+- **NestJS** (Progressive Node.js Framework)
+- **TypeScript** (Type Safety)
+- **TypeORM** (Database ORM)
+- **MongoDB / PostgreSQL** (Database)
+- **JWT Auth** (Authentication)
+- **Jest** (Testing Framework)
+- **AWS EC2** (Production Hosting)
+- **PM2** (Process Management)
 
-## Project setup
+---
 
-```bash
-$ npm install
+## 📁 Folder Structure
+
+```
+src/
+├── auth/              # Authentication module with JWT
+│   ├── dto/           # Data Transfer Objects
+│   ├── guards/        # JWT auth guards
+│   ├── strategies/    # Passport strategies
+│   └── interfaces/    # TypeScript interfaces
+├── users/             # User module with CRUD & pagination
+├── branch/            # Institute branch module
+├── location/          # Normalized location (city, state, country)
+├── common/            # Shared utilities, decorators, DTOs
+│   ├── decorators/    # Custom decorators
+│   ├── guards/        # Authorization guards
+│   ├── enums/         # TypeScript enums
+│   └── utils/         # Utility functions
+└── main.ts            # App entry point
+
+test/
+├── auth.e2e-spec.ts   # End-to-end tests
+├── mocks/             # Test mocking utilities
+└── test-helpers.ts    # Testing helper functions
 ```
 
-## Compile and run the project
+---
+
+## 🔐 Features
+
+- ✅ **Authentication & Security**
+  - Secure SignUp / SignIn with JWT
+  - Role-based Authorization (Admin / Teacher / Student)
+  - Password hashing with bcrypt
+  - JWT token validation and guards
+
+- ✅ **User Management**
+  - Paginated User Listing with Filters & Sorting
+  - User profile management
+  - Role-based access control
+
+- ✅ **Data Management**
+  - City-State-Country Normalization for Address
+  - TypeORM entity relationships
+  - Data validation with class-validator
+
+- ✅ **Development & Testing**
+  - Comprehensive Unit Tests (Jest)
+  - End-to-End (E2E) Testing
+  - 75%+ Test Coverage
+  - TypeScript strict mode compliance
+
+- ✅ **Architecture & Deployment**
+  - Modular, Scalable NestJS Structure
+  - RESTful API design
+  - Deployed on AWS EC2
+  - Production-ready configuration
+
+---
+
+## ⚙️ Setup & Run Locally
+
+### 1. Clone the Repo
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+git clone https://github.com/shivpandey-dev/e-learning-api.git
+cd e-learning-api
 ```
 
-## Run tests
+### 2. Install Dependencies
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm install
 ```
 
-## Deployment
+### 3. Environment Variables
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+Create a `.env` file:
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+```env
+PORT=3000
+MONGO_URI=your_mongo_or_postgres_connection
+JWT_SECRET=your_jwt_secret
+```
+
+### 4. Run the Server
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Development mode
+npm run start:dev
+
+# Production mode
+npm run start:prod
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+## 🧪 Testing
 
-Check out a few resources that may come in handy when working with NestJS:
+This project includes comprehensive testing with Jest.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Run Tests
 
-## Support
+```bash
+# Run all tests
+npm test
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+# Run tests with coverage
+npm run test:cov
 
-## Stay in touch
+# Run tests in watch mode
+npm run test:watch
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# Run E2E tests
+npm run test:e2e
 
-## License
+# Run specific module tests
+npm test -- --testPathPattern=auth
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Test Coverage
+
+- **Unit Tests**: Individual component testing with mocking
+- **E2E Tests**: Complete request/response cycle testing
+- **Coverage**: 75%+ code coverage maintained
+- **Quality**: TypeScript strict mode compliance
+
+For detailed testing guidelines, see [TESTING.md](TESTING.md).
+
+---
+
+## 🚀 Production (on AWS EC2)
+
+```bash
+npm run build
+pm2 start dist/main.js --name elearning-api
+pm2 save
+pm2 startup
+```
+
+---
+
+## 📦 API Endpoints
+
+### Authentication
+| Method | Endpoint           | Description                | Status |
+|--------|--------------------|----------------------------|---------|
+| POST   | `/auth/sign-up`    | Register new user          | ✅ Tested |
+| POST   | `/auth/sign-in`    | Login with email/phone     | ✅ Tested |
+
+### Users
+| Method | Endpoint           | Description                | Status |
+|--------|--------------------|----------------------------|---------|
+| GET    | `/users`           | Get users (paginated)      | 🚧 In Progress |
+| GET    | `/users/me`        | Get current user profile   | 🚧 In Progress |
+| POST   | `/users`           | Create new user (Admin)    | 🚧 In Progress |
+
+### Branches
+| Method | Endpoint           | Description                | Status |
+|--------|--------------------|----------------------------|---------|
+| GET    | `/branch`          | Get all branches           | 🚧 In Progress |
+
+➡️ More endpoints to be documented...
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss.
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+## 🙌 Author
+
+Built with ❤️ by **[Shiv Pandey](https://github.com/shivpandey-dev)**
