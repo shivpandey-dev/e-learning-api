@@ -6,6 +6,8 @@ import { SignInUserDto } from './dto/signInUser.dto';
 import { UserRole } from '../common/enums/UserRole.enum';
 import { UnauthorizedException } from '@nestjs/common';
 
+/* eslint-disable @typescript-eslint/unbound-method */
+
 describe('AuthController', () => {
   let controller: AuthController;
   let authService: jest.Mocked<AuthService>;

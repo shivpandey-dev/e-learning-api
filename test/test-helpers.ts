@@ -4,6 +4,9 @@ import { Repository } from 'typeorm';
 import { User } from '../src/users/user.entity';
 import { UserRole } from '../src/common/enums/UserRole.enum';
 
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+
 export const createMockRepository = () => ({
   create: jest.fn(),
   save: jest.fn(),

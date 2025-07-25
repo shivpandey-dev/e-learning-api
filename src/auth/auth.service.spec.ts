@@ -10,6 +10,8 @@ import { UserRole } from '../common/enums/UserRole.enum';
 import { SignUpUserDto } from './dto/signUpUser.dto';
 import { SignInUserDto } from './dto/signInUser.dto';
 
+/* eslint-disable @typescript-eslint/unbound-method */
+
 // Mock bcrypt
 jest.mock('bcrypt');
 const mockedBcrypt = bcrypt as jest.Mocked<typeof bcrypt>;
