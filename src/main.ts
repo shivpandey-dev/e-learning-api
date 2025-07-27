@@ -6,6 +6,6 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-  await app.listen(process.env.PORT ?? 4300);
+  await app.listen(Number(process.env.PORT) || 4300);
 }
 void bootstrap();

@@ -48,22 +48,26 @@ test/
 ## 🔐 Features
 
 - ✅ **Authentication & Security**
+
   - Secure SignUp / SignIn with JWT
   - Role-based Authorization (Admin / Teacher / Student)
   - Password hashing with bcrypt
   - JWT token validation and guards
 
 - ✅ **User Management**
+
   - Paginated User Listing with Filters & Sorting
   - User profile management
   - Role-based access control
 
 - ✅ **Data Management**
+
   - City-State-Country Normalization for Address
   - TypeORM entity relationships
   - Data validation with class-validator
 
 - ✅ **Development & Testing**
+
   - Comprehensive Unit Tests (Jest)
   - End-to-End (E2E) Testing
   - 75%+ Test Coverage
@@ -162,22 +166,25 @@ pm2 startup
 ## 📦 API Endpoints
 
 ### Authentication
-| Method | Endpoint           | Description                | Status |
-|--------|--------------------|----------------------------|---------|
-| POST   | `/auth/sign-up`    | Register new user          | ✅ Tested |
-| POST   | `/auth/sign-in`    | Login with email/phone     | ✅ Tested |
+
+| Method | Endpoint        | Description            | Status    |
+| ------ | --------------- | ---------------------- | --------- |
+| POST   | `/auth/sign-up` | Register new user      | ✅ Tested |
+| POST   | `/auth/sign-in` | Login with email/phone | ✅ Tested |
 
 ### Users
-| Method | Endpoint           | Description                | Status |
-|--------|--------------------|----------------------------|---------|
-| GET    | `/users`           | Get users (paginated)      | 🚧 In Progress |
-| GET    | `/users/me`        | Get current user profile   | 🚧 In Progress |
-| POST   | `/users`           | Create new user (Admin)    | 🚧 In Progress |
+
+| Method | Endpoint    | Description              | Status         |
+| ------ | ----------- | ------------------------ | -------------- |
+| GET    | `/users`    | Get users (paginated)    | 🚧 In Progress |
+| GET    | `/users/me` | Get current user profile | 🚧 In Progress |
+| POST   | `/users`    | Create new user (Admin)  | 🚧 In Progress |
 
 ### Branches
-| Method | Endpoint           | Description                | Status |
-|--------|--------------------|----------------------------|---------|
-| GET    | `/branch`          | Get all branches           | 🚧 In Progress |
+
+| Method | Endpoint  | Description      | Status         |
+| ------ | --------- | ---------------- | -------------- |
+| GET    | `/branch` | Get all branches | 🚧 In Progress |
 
 ➡️ More endpoints to be documented...
 
