@@ -11,13 +11,26 @@ import { LocationModule } from './location/location.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT),
+      host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT || '5432', 10),
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: process.env.NODE_ENV !== 'production', // Disable in production
+      logging: process.env.NODE_ENV === 'development',
+      ssl:
+        process.env.NODE_ENV === 'production'
+          ? {
+              rejectUnauthorized: false,
+            }
+          : false,
+      // Connection pool settings
+      extra: {
+        connectionLimit: 10,
+        acquireTimeout: 60000,
+        timeout: 60000,
+      },
     }),
 
     AuthModule,
