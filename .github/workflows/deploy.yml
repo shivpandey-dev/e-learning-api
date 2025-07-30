@@ -1,16 +1,18 @@
-name: Deploy to EC2
+name: Deploy to EC2 (Dev/Stage/Prod)
 
 on:
   push:
     branches:
-      - main # or 'dev', 'stage', etc.
+      - dev
+      - stage
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up SSH
@@ -18,14 +20,33 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts || true
 
       - name: Deploy to EC2
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            cd ${{ secrets.EC2_PROJECT_PATH }}
-            git pull origin main
+          if [ "${{ github.ref_name }}" = "dev" ]; then
+            export ENV_NAME="dev"
+            export EC2_HOST="${{ secrets.EC2_HOST_DEV }}"
+            export PROJECT_PATH="${{ secrets.EC2_PROJECT_PATH_DEV }}"
+            export PM2_APP_NAME="lms-api-dev"
+          elif [ "${{ github.ref_name }}" = "stage" ]; then
+            export ENV_NAME="stage"
+            export EC2_HOST="${{ secrets.EC2_HOST_STAGE }}"
+            export PROJECT_PATH="${{ secrets.EC2_PROJECT_PATH_STAGE }}"
+            export PM2_APP_NAME="lms-api-stage"
+          else
+            export ENV_NAME="prod"
+            export EC2_HOST="${{ secrets.EC2_HOST }}"
+            export PROJECT_PATH="${{ secrets.EC2_PROJECT_PATH }}"
+            export PM2_APP_NAME="lms-api"
+          fi
+
+          echo "Deploying to $ENV_NAME at $EC2_HOST"
+
+          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@$EC2_HOST << EOF
+            cd $PROJECT_PATH
+            git pull origin $ENV_NAME
             npm install
             npm run build
-            pm2 restart lms-api || pm2 start dist/main.js --name lms-api
+            pm2 restart $PM2_APP_NAME || pm2 start dist/main.js --name $PM2_APP_NAME
           EOF
