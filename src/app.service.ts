@@ -5,7 +5,7 @@ export class AppService {
   getHello(): any {
     const environment = process.env.NODE_ENV || 'development';
     return {
-      message: `Welcome to the E-Learning Platform API! - ${environment}`,
+      message: `Welcome to the E-Learning Platform API! - ${environment} Server`,
       status: 'OK',
       version: 'v1.0',
       docs: '/api-docs',
