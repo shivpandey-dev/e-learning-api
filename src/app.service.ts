@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 export class AppService {
   getHello(): any {
     return {
-      message: 'Welcome to the E-Learning Platform API! - Staging Server',
+      message: 'Welcome to the E-Learning Platform API! - Development Server',
       status: 'OK',
       version: 'v1.0',
       docs: '/api-docs',
