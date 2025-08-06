@@ -35,7 +35,7 @@ jobs:
             export PROJECT_PATH="${{ secrets.EC2_PROJECT_PATH_STAGE }}"
             export PM2_APP_NAME="lms-api-stage"
           else
-            export ENV_NAME="prod"
+            export ENV_NAME="main"
             export EC2_HOST="${{ secrets.EC2_HOST }}"
             export PROJECT_PATH="${{ secrets.EC2_PROJECT_PATH }}"
             export PM2_APP_NAME="lms-api"
