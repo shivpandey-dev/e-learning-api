@@ -5,6 +5,9 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.setGlobalPrefix('api/prod');
+  app.setGlobalPrefix('api/stage');
+  app.setGlobalPrefix('api/dev');
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   await app.listen(Number(process.env.PORT) || 4300);
 }
