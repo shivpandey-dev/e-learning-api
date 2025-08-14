@@ -1,3 +1,4 @@
+// auth.service.ts
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { SignInUserDto } from './dto/signInUser.dto';
@@ -7,12 +8,15 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { SignUpUserDto } from './dto/signUpUser.dto';
 import { JwtUserPayload } from './interfaces/jwtUserPayload.interface';
+import { ConfigService } from '@nestjs/config';
+
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
+    private readonly config: ConfigService, // ⬅ add this
   ) {}
 
   // sign up
@@ -47,10 +51,18 @@ export class AuthService {
     if (!user) throw new UnauthorizedException('Invalid Credential');
 
     const isMatch = await bcrypt.compare(password, user.password);
-
     if (!isMatch) throw new UnauthorizedException('Invalid Credential');
 
-    const payload: JwtUserPayload = { userId: user.id, role: user.role };
+    const payload: JwtUserPayload = {
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+    };
+
+    // DEBUG: which secret is used for signing?
+    const signingSecret = this.config.get<string>('JWT_SECRET');
+    console.log('[AuthService] JWT_SECRET (signing):', signingSecret);
+
     const accessToken = await this.jwtService.signAsync(payload);
 
     return {

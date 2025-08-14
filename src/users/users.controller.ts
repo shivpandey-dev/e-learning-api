@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/createUser.dto';
-import { Auth } from 'src/common/decorators/auth.decorator';
+import { Auth } from 'src/auth/decorators/auth.decorator';
 import { Request } from 'express';
 import { PaginatedUserQueryDto } from './dto/paginatedUserQuery.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
@@ -25,7 +25,7 @@ export class UsersController {
   async create(@Body() dto: CreateUserDto) {
     return this.usersService.create(dto);
   }
-  @Auth('admin', 'teacher')
+  @Auth('teacher')
   @Get()
   async findAll(@Query() query: PaginatedUserQueryDto, @Req() req: Request) {
     const route = `${req.protocol}://${req.get('host')}${req.baseUrl}${req.path}`;

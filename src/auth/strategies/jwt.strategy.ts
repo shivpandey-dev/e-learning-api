@@ -1,19 +1,43 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { JWT_SECRET } from 'src/common/constants/key.constant';
+import { ConfigService } from '@nestjs/config';
+
+export interface JwtUserPayload {
+  userId: string;
+  role: string; // singular role
+  email?: string;
+}
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
+  constructor(config: ConfigService) {
+    const jwtSecret = config.get<string>('JWT_SECRET');
+    if (!jwtSecret) {
+      throw new Error('JWT_SECRET is not defined in configuration');
+    }
+
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET || JWT_SECRET,
+      secretOrKey: jwtSecret,
     });
   }
 
-  validate(payload: { sub: string; role: string }) {
-    return { userId: payload.sub, role: payload.role };
+  validate(payload: JwtUserPayload) {
+    if (!payload?.userId) {
+      throw new UnauthorizedException('Invalid token payload');
+    }
+
+    const role = (payload.role || '').toLowerCase();
+    const roles = role ? [role] : [];
+
+    // This becomes req.user
+    return {
+      userId: payload.userId,
+      email: payload.email,
+      role,
+      roles,
+    };
   }
 }

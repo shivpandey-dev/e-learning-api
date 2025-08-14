@@ -21,7 +21,8 @@
     "test:unit": "jest --testPathIgnorePatterns=/test/",
     "test:auth": "jest --testPathPattern=auth",
     "test:users": "jest --testPathPattern=users",
-    "test:branch": "jest --testPathPattern=branch"
+    "test:branch": "jest --testPathPattern=branch",
+    "seed:locations": "ts-node src/seeder/location.seeder.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

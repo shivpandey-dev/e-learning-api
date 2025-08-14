@@ -20,7 +20,7 @@ import { ConfigModule } from '@nestjs/config';
       database: process.env.DB_DATABASE,
       autoLoadEntities: true,
       synchronize: process.env.NODE_ENV !== 'production', // Disable in production
-      logging: process.env.NODE_ENV === 'development',
+      logging: false, //process.env.NODE_ENV === 'development',
       ssl:
         process.env.NODE_ENV === 'production'
           ? {
@@ -34,7 +34,6 @@ import { ConfigModule } from '@nestjs/config';
         timeout: 60000,
       },
     }),
-
     AuthModule,
     UsersModule,
     BranchModule,

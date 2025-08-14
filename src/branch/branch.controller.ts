@@ -9,7 +9,7 @@ import {
   Query,
   Req,
 } from '@nestjs/common';
-import { Auth } from 'src/common/decorators/auth.decorator';
+import { Auth } from 'src/auth/decorators/auth.decorator';
 import { BranchService } from './branch.service';
 import { CreateBranchDto } from './dto/createBranch.dto';
 import { PaginatedBranchQueryDto } from './dto/paginatedBranchQuery.dto';
