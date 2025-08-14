@@ -9,7 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { UserRole } from '../common/enums/UserRole.enum';
 import { SignUpUserDto } from './dto/signUpUser.dto';
 import { SignInUserDto } from './dto/signInUser.dto';
-
+import { ConfigService } from '@nestjs/config';
 /* eslint-disable @typescript-eslint/unbound-method */
 
 // Mock bcrypt
@@ -51,6 +51,10 @@ describe('AuthService', () => {
       verifyAsync: jest.fn(),
     };
 
+    const mockConfigService = {
+      get: jest.fn().mockReturnValue('test_jwt_secret'),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
@@ -61,6 +65,10 @@ describe('AuthService', () => {
         {
           provide: JwtService,
           useValue: mockJwtService,
+        },
+        {
+          provide: ConfigService,
+          useValue: mockConfigService,
         },
       ],
     }).compile();
@@ -144,6 +152,7 @@ describe('AuthService', () => {
       );
       expect(jwtService.signAsync).toHaveBeenCalledWith({
         userId: mockUser.id,
+        email: mockUser.email,
         role: mockUser.role,
       });
       expect(result).toEqual({
