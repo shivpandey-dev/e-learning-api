@@ -17,9 +17,15 @@ describe('AppController (e2e)', () => {
   });
 
   it('/ (GET)', () => {
+    const environment = process.env.NODE_ENV || 'development';
     return request(app.getHttpServer())
       .get('/')
       .expect(200)
-      .expect('Hello World!');
+      .expect({
+        message: `Welcome to the E-Learning Platform API! - ${environment.toUpperCase()} Server`,
+        status: 'OK',
+        version: 'v1.0',
+        docs: '/api-docs',
+      });
   });
 });
