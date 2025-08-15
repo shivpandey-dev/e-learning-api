@@ -148,8 +148,6 @@ npm test -- --testPathPattern=auth
 - **Coverage**: 75%+ code coverage maintained
 - **Quality**: TypeScript strict mode compliance
 
-For detailed testing guidelines, see [TESTING.md](TESTING.md).
-
 ---
 
 ## 🚀 Production (on AWS EC2)
