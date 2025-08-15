@@ -33,7 +33,7 @@ export class UsersController {
     return this.usersService.findAllWithPagination(query, route, queryParams);
   }
 
-  @Get('me')
+  @Get('me-')
   getMe(@Req() req: Request) {
     return this.usersService.findOne(req.user.userId);
   }
