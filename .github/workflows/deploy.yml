@@ -38,7 +38,7 @@ jobs:
             export ENV_NAME="main"
             export EC2_HOST="${{ secrets.EC2_HOST }}"
             export PROJECT_PATH="${{ secrets.EC2_PROJECT_PATH }}"
-            export PM2_APP_NAME="lms-api"
+            export PM2_APP_NAME="lms-api-prod"
           fi
 
           echo "Deploying to $ENV_NAME at $EC2_HOST"
