@@ -1,9 +1,5 @@
 import { IsEnum, IsNumberString, IsOptional, IsString } from 'class-validator';
-
-export enum SortOrder {
-  ASC = 'ASC',
-  DESC = 'DESC',
-}
+import { SortOrder } from '../enums/SortOrder.enum';
 
 export class PaginatedQueryDto {
   @IsOptional()

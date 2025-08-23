@@ -7,6 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { BranchModule } from './branch/branch.module';
 import { LocationModule } from './location/location.module';
 import { ConfigModule } from '@nestjs/config';
+import { CoursesModule } from './courses/courses.module';
+import { PublicModule } from './public/public.module';
 
 @Module({
   imports: [
@@ -38,6 +40,8 @@ import { ConfigModule } from '@nestjs/config';
     UsersModule,
     BranchModule,
     LocationModule,
+    CoursesModule,
+    PublicModule,
   ],
   controllers: [AppController],
   providers: [AppService],

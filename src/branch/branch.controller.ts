@@ -16,11 +16,12 @@ import { PaginatedBranchQueryDto } from './dto/paginatedBranchQuery.dto';
 import { Request } from 'express';
 import { UpdateBranchDto } from './dto/updateBranch.dto';
 
-@Auth('admin')
+@Auth()
 @Controller('branches')
 export class BranchController {
   constructor(private readonly branchService: BranchService) {}
 
+  @Auth('admin')
   @Post()
   create(@Body() dto: CreateBranchDto) {
     return this.branchService.create(dto);
@@ -37,12 +38,12 @@ export class BranchController {
   findOne(@Param('id') id: string) {
     return this.branchService.findOne(id);
   }
-
+  @Auth('admin')
   @Put(':id')
   update(@Param('id') id: string, @Body() dto: UpdateBranchDto) {
     return this.branchService.update(id, dto);
   }
-
+  @Auth('admin')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.branchService.remove(id);

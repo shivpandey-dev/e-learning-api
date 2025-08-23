@@ -1,5 +1,5 @@
 import { Brackets, ObjectLiteral, SelectQueryBuilder } from 'typeorm';
-import { SortOrder } from '../dto/paginatedQuery.dto';
+import { SortOrder } from '../enums/SortOrder.enum';
 import {
   PaginatedResponseDto,
   PaginationLinks,

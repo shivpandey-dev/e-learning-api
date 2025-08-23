@@ -21,11 +21,12 @@ import { UpdateUserDto } from './dto/updateUser.dto';
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
+  @Auth('admin')
   @Post()
   async create(@Body() dto: CreateUserDto) {
     return this.usersService.create(dto);
   }
-  @Auth('teacher')
+  @Auth('teacher', 'admin')
   @Get()
   async findAll(@Query() query: PaginatedUserQueryDto, @Req() req: Request) {
     const route = `${req.protocol}://${req.get('host')}${req.baseUrl}${req.path}`;
@@ -33,7 +34,7 @@ export class UsersController {
     return this.usersService.findAllWithPagination(query, route, queryParams);
   }
 
-  @Get('me-')
+  @Get('me')
   getMe(@Req() req: Request) {
     return this.usersService.findOne(req.user.userId);
   }
