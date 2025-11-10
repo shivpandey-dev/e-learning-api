@@ -11,6 +11,7 @@ import {
 import { User } from 'src/users/user.entity';
 import { Branch } from 'src/branch/entities/branch.entity';
 import { CourseSection } from './courseSection.entity';
+import { VideoProvider } from '../enums/VideoProvider.enum';
 
 @Entity('courses')
 export class Course {
@@ -35,6 +36,13 @@ export class Course {
 
   @Column({ default: false })
   isPublished: boolean;
+
+  @Column({ type: 'enum', enum: VideoProvider, nullable: true })
+  videoProvider: VideoProvider | null;
+
+  // TPStreams folder UUID where this course’s videos will live
+  @Column({ type: 'varchar', nullable: true })
+  providerFolderId: string | null;
 
   // who created/owns this course (teacher)
   @ManyToOne(() => User, { nullable: false })

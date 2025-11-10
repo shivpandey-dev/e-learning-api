@@ -1,10 +1,12 @@
 import {
   IsBoolean,
+  IsEnum,
   IsNumberString,
   IsOptional,
   IsString,
   Matches,
 } from 'class-validator';
+import { VideoProvider } from '../enums/VideoProvider.enum';
 
 export class UpdateCourseDto {
   @IsOptional()
@@ -35,4 +37,8 @@ export class UpdateCourseDto {
   @IsOptional()
   @IsBoolean()
   isPublished?: boolean;
+
+  @IsEnum(VideoProvider)
+  @IsOptional()
+  videoProvider?: VideoProvider;
 }

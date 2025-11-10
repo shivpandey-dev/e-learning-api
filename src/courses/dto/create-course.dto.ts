@@ -1,11 +1,13 @@
 import {
   IsBoolean,
+  IsEnum,
   IsNotEmpty,
   IsNumberString,
   IsOptional,
   IsString,
   Matches,
 } from 'class-validator';
+import { VideoProvider } from '../enums/VideoProvider.enum';
 
 export class CreateCourseDto {
   @IsString()
@@ -46,4 +48,8 @@ export class CreateCourseDto {
   @IsOptional()
   @IsBoolean()
   isPublished?: boolean;
+
+  @IsEnum(VideoProvider, { message: 'videoProvider must be a valid provider' })
+  @IsNotEmpty()
+  videoProvider: VideoProvider;
 }

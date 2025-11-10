@@ -9,6 +9,6 @@ import { LocationModule } from 'src/location/location.module';
   imports: [TypeOrmModule.forFeature([Branch]), LocationModule],
   controllers: [BranchController],
   providers: [BranchService],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, BranchService],
 })
 export class BranchModule {}

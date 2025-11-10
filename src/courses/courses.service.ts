@@ -19,6 +19,8 @@ import { paginate } from 'src/common/utils/paginate';
 import { User } from 'src/users/user.entity';
 import { Branch } from 'src/branch/entities/branch.entity';
 import { normalizeSortOrder } from 'src/common/utils/sortOrder';
+import { TpstreamsService } from 'src/integrations/tpstreams/tpstreams.service';
+import { VideoProvider } from './enums/VideoProvider.enum';
 
 @Injectable()
 export class CoursesService {
@@ -29,6 +31,7 @@ export class CoursesService {
     @InjectRepository(Lesson) private readonly lessonRepo: Repository<Lesson>,
     @InjectRepository(User) private readonly userRepo: Repository<User>,
     @InjectRepository(Branch) private readonly branchRepo: Repository<Branch>,
+    private readonly tpstreamsService: TpstreamsService,
   ) {}
 
   // --- helpers ---
@@ -63,6 +66,7 @@ export class CoursesService {
       isPublished: !!dto.isPublished,
       slug: dto.slug ?? this.toSlug(dto.title),
       teacher,
+      videoProvider: dto.videoProvider, // ⬅️ store provider
     });
 
     if (dto.branchId) {
@@ -71,6 +75,15 @@ export class CoursesService {
       });
       if (!branch) throw new NotFoundException('Branch not found');
       course.branch = branch;
+    }
+
+    // --- TPSTREAMS integration ---
+    if (course.videoProvider === VideoProvider.TPSTREAMS) {
+      // create folder remotely before saving
+      const folder = await this.tpstreamsService.createFolderForCourse(
+        course.title,
+      );
+      course.providerFolderId = folder.uuid;
     }
 
     return this.courseRepo.save(course);

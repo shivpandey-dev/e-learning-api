@@ -18,6 +18,8 @@ import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { Request } from 'express';
+import { Query } from '@nestjs/common';
+import { PaginatedCourseQueryDto } from './dto/paginated-course-query.dto';
 
 @Auth('admin', 'teacher') // everything here requires teacher/admin
 @Controller('courses')
@@ -29,9 +31,46 @@ export class CoursesController {
     return this.coursesService.createCourse(dto, req.user as any);
   }
 
+  @Get()
+  getCourses(@Query() query: PaginatedCourseQueryDto, @Req() req: Request) {
+    const route = `${req.protocol}://${req.get('host')}${req.baseUrl}`;
+
+    // Normalize ParsedQs -> Record<string, string | string[]>
+    const safeString = (val: unknown): string => {
+      if (val === null || val === undefined) return '';
+      if (typeof val === 'string') return val;
+      if (typeof val === 'number' || typeof val === 'boolean')
+        return String(val);
+      // Arrays or objects -> JSON
+      try {
+        return JSON.stringify(val);
+      } catch {
+        return '';
+      }
+    };
+
+    const plainQuery: Record<string, string | string[]> = {};
+    for (const [key, val] of Object.entries(req.query)) {
+      if (val === undefined || val === null) continue;
+
+      if (Array.isArray(val)) {
+        plainQuery[key] = val.map((item) => safeString(item));
+      } else {
+        plainQuery[key] = safeString(val);
+      }
+    }
+
+    return this.coursesService.listCourses(query, route, plainQuery);
+  }
+
   @Get(':id')
   getCourse(@Param('id', ParseUUIDPipe) id: string) {
     return this.coursesService.findCourseById(id);
+  }
+
+  @Get('slug/:slug')
+  getCourseBySlug(@Param('slug') slug: string) {
+    return this.coursesService.findCourseBySlug(slug);
   }
 
   @Patch(':id')
