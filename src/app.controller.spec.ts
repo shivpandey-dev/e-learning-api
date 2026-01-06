@@ -1,45 +1,45 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AppService, HelloResponse } from './app.service';
 
 describe('AppController', () => {
   let appController: AppController;
-  let appService: jest.Mocked<AppService>;
 
-  const mockAppService = {
+  // Typed mock without jest.Mocked<...> to avoid unbound-method warning
+  const mockAppService: Pick<AppService, 'getHello'> = {
     getHello: jest.fn(),
   };
 
   beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
+    const moduleRef: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [
-        {
-          provide: AppService,
-          useValue: mockAppService,
-        },
-      ],
+      providers: [{ provide: AppService, useValue: mockAppService }],
     }).compile();
 
-    appController = app.get<AppController>(AppController);
-    appService = app.get(AppService);
+    // Strongly typed, no `any` → no no-unsafe-assignment
+    appController = moduleRef.get<AppController>(AppController);
 
-    // Reset all mocks
     jest.clearAllMocks();
   });
 
   describe('home', () => {
-    it('should return "Hello World!"', () => {
-      // Arrange
-      const expectedMessage = 'Hello World!';
-      appService.getHello.mockReturnValue(expectedMessage);
+    it('should return welcome object from AppService', () => {
+      const expectedResponse: HelloResponse = {
+        message: 'Welcome to the E-Learning Platform API! - DEVELOPMENT Server',
+        status: 'OK',
+        version: 'v1.0',
+        docs: '/api-docs',
+      };
 
-      // Act
+      // Narrow mock type so ESLint is happy
+      (mockAppService.getHello as jest.Mock<HelloResponse>).mockReturnValue(
+        expectedResponse,
+      );
+
       const result = appController.home();
 
-      // Assert
-      expect(mockAppService.getHello).toHaveBeenCalled();
-      expect(result).toBe(expectedMessage);
+      expect(mockAppService.getHello).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(expectedResponse);
     });
   });
 });

@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -195,6 +196,34 @@ export class CoursesService {
     });
   }
 
+  async setCoursePublishStatus(
+    id: string,
+    isPublished: boolean,
+    currentUser: { userId: string; role: string },
+  ) {
+    const course = await this.courseRepo.findOne({
+      where: { id },
+      relations: ['teacher'],
+    });
+
+    if (!course) {
+      throw new NotFoundException('Course not found');
+    }
+
+    // Only admin or the course's teacher can change publish status
+    if (
+      currentUser.role !== 'admin' &&
+      course.teacher?.id !== currentUser.userId
+    ) {
+      throw new ForbiddenException(
+        'You cannot change publish status for this course',
+      );
+    }
+
+    course.isPublished = isPublished;
+    return this.courseRepo.save(course);
+  }
+
   // --- sections ---
   async addSection(
     dto: CreateSectionDto,
@@ -265,6 +294,59 @@ export class CoursesService {
     }
     await this.sectionRepo.remove(section);
     return { success: true };
+  }
+
+  async reorderSections(
+    dto: { courseId: string; sectionIds: string[] },
+    currentUser: { userId: string; role: string },
+  ) {
+    const course = await this.courseRepo.findOne({
+      where: { id: dto.courseId },
+      relations: ['teacher', 'sections'],
+    });
+
+    if (!course) {
+      throw new NotFoundException('Course not found');
+    }
+
+    // Only admin or the course's teacher can reorder sections
+    if (
+      currentUser.role !== 'admin' &&
+      course.teacher?.id !== currentUser.userId
+    ) {
+      throw new ForbiddenException(
+        'You cannot reorder sections for this course',
+      );
+    }
+
+    const { sectionIds } = dto;
+
+    if (sectionIds.length !== course.sections.length) {
+      throw new BadRequestException(
+        'sectionIds must include all sections of the course',
+      );
+    }
+
+    const sectionMap = new Map(course.sections.map((s) => [s.id, s]));
+
+    for (const id of sectionIds) {
+      if (!sectionMap.has(id)) {
+        throw new BadRequestException(
+          `Section ${id} does not belong to this course`,
+        );
+      }
+    }
+
+    // Apply new order
+    sectionIds.forEach((id, index) => {
+      const section = sectionMap.get(id)!;
+      section.orderIndex = index;
+    });
+
+    const updatedSections = await this.sectionRepo.save(course.sections);
+
+    // Return ordered list
+    return updatedSections.sort((a, b) => a.orderIndex - b.orderIndex);
   }
 
   // --- lessons ---
@@ -348,5 +430,100 @@ export class CoursesService {
     }
     await this.lessonRepo.remove(lesson);
     return { success: true };
+  }
+
+  async reorderLessons(
+    dto: { sectionId: string; lessonIds: string[] },
+    currentUser: { userId: string; role: string },
+  ) {
+    const section = await this.sectionRepo.findOne({
+      where: { id: dto.sectionId },
+      relations: ['course', 'course.teacher', 'lessons'],
+    });
+
+    if (!section) {
+      throw new NotFoundException('Section not found');
+    }
+
+    // Only admin or the course's teacher can reorder lessons
+    if (
+      currentUser.role !== 'admin' &&
+      section.course.teacher?.id !== currentUser.userId
+    ) {
+      throw new ForbiddenException(
+        'You cannot reorder lessons for this section',
+      );
+    }
+
+    const { lessonIds } = dto;
+
+    if (lessonIds.length !== section.lessons.length) {
+      throw new BadRequestException(
+        'lessonIds must include all lessons of the section',
+      );
+    }
+
+    const lessonMap = new Map(section.lessons.map((l) => [l.id, l]));
+
+    for (const id of lessonIds) {
+      if (!lessonMap.has(id)) {
+        throw new BadRequestException(
+          `Lesson ${id} does not belong to this section`,
+        );
+      }
+    }
+
+    // Apply new order
+    lessonIds.forEach((id, index) => {
+      const lesson = lessonMap.get(id)!;
+      lesson.orderIndex = index;
+    });
+
+    const updatedLessons = await this.lessonRepo.save(section.lessons);
+
+    // Return ordered list
+    return updatedLessons.sort((a, b) => a.orderIndex - b.orderIndex);
+  }
+
+  async findLessonWithCourseByLessonId(lessonId: string) {
+    const lesson = await this.lessonRepo.findOne({
+      where: { id: lessonId },
+      relations: ['section', 'section.course'],
+    });
+
+    if (!lesson) {
+      throw new NotFoundException('Lesson not found');
+    }
+
+    return lesson;
+  }
+
+  async attachTpstreamsVideoToLesson(params: {
+    lessonId: string;
+    assetId: string;
+  }) {
+    const lesson = await this.lessonRepo.findOne({
+      where: { id: params.lessonId },
+      relations: ['section', 'section.course', 'section.course.teacher'],
+    });
+
+    if (!lesson) throw new NotFoundException('Lesson not found');
+
+    // attach provider + ref id
+    lesson.videoProvider = VideoProvider.TPSTREAMS;
+    lesson.videoRefId = params.assetId;
+
+    return this.lessonRepo.save(lesson);
+  }
+
+  async findLessonWithCourseById(lessonId: string) {
+    const lesson = await this.lessonRepo.findOne({
+      where: { id: lessonId },
+      relations: ['section', 'section.course'],
+    });
+
+    if (!lesson) throw new NotFoundException('Lesson not found');
+
+    return lesson;
   }
 }

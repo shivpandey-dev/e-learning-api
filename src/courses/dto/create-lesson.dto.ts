@@ -28,17 +28,17 @@ export class CreateLessonDto {
   type: LessonType;
 
   // TEXT
-  @ValidateIf((o) => o.type === LessonType.TEXT)
+  @ValidateIf((o: CreateLessonDto) => o.type === LessonType.TEXT)
   @IsString()
   @IsNotEmpty()
   textContent?: string;
 
   // VIDEO
-  @ValidateIf((o) => o.type === LessonType.VIDEO)
+  @ValidateIf((o: CreateLessonDto) => o.type === LessonType.VIDEO)
   @IsEnum(VideoProvider)
   videoProvider?: VideoProvider;
 
-  @ValidateIf((o) => o.type === LessonType.VIDEO)
+  @ValidateIf((o: CreateLessonDto) => o.type === LessonType.VIDEO)
   @IsString()
   @IsNotEmpty()
   videoRefId?: string;

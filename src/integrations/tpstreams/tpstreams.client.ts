@@ -7,6 +7,8 @@ import axios, {
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
+  TpstreamsCreateAssetRequest,
+  TpstreamsCreateAssetResponse,
   TpstreamsCreateFolderRequest,
   TpstreamsCreateFolderResponse,
   TpstreamsError,
@@ -179,7 +181,6 @@ export class TpstreamsClient {
 
     if (force) {
       while (this.isLoggingIn) {
-        // eslint-disable-next-line no-await-in-loop
         await this.sleep(25);
       }
       this.isLoggingIn = true;
@@ -187,7 +188,7 @@ export class TpstreamsClient {
 
     const doLogin = async () => {
       let attempt = 0;
-      // eslint-disable-next-line no-constant-condition
+
       while (true) {
         attempt++;
         try {
@@ -242,7 +243,7 @@ export class TpstreamsClient {
             throw te;
           }
           const delay = this.backoffWithJitter(this.loginBaseDelayMs, attempt);
-          // eslint-disable-next-line no-await-in-loop
+
           await this.sleep(delay);
         }
       }
@@ -358,5 +359,47 @@ export class TpstreamsClient {
     this.logger.error(
       `TPStreams error code=${code} status=${status} requestId=${requestId}`,
     );
+  }
+
+  async createAsset(
+    payload: TpstreamsCreateAssetRequest,
+  ): Promise<TpstreamsCreateAssetResponse> {
+    try {
+      const res = await this.http.post<TpstreamsCreateAssetResponse>(
+        '/v1/assets',
+        payload,
+      );
+
+      return res.data;
+    } catch (err: unknown) {
+      const te = this.mapError(
+        'Failed to create TPStreams asset',
+        err,
+        TpstreamsErrorCode.VALIDATION_FAILED,
+      );
+      this.safeErrorLog(te);
+      throw te;
+    }
+  }
+
+  /**
+   * Public: returns a valid TPStreams auth token (cached + reused).
+   * This aligns with TPStreams best practices (avoid generating too many tokens).
+   */
+  async getAuthToken(): Promise<{ token: string; orgId: string }> {
+    await this.ensureToken();
+
+    if (!this.token.token) {
+      throw new TpstreamsError(
+        'TPStreams auth token unavailable after login',
+        502,
+        TpstreamsErrorCode.LOGIN_FAILED,
+      );
+    }
+
+    return {
+      token: this.token.token,
+      orgId: this.orgId,
+    };
   }
 }

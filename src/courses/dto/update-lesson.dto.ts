@@ -23,15 +23,15 @@ export class UpdateLessonDto {
   @IsEnum(LessonType)
   type?: LessonType;
 
-  @ValidateIf((o) => o.type === LessonType.TEXT)
+  @ValidateIf((o: UpdateLessonDto) => o.type === LessonType.TEXT)
   @IsString()
   textContent?: string;
 
-  @ValidateIf((o) => o.type === LessonType.VIDEO)
+  @ValidateIf((o: UpdateLessonDto) => o.type === LessonType.VIDEO)
   @IsEnum(VideoProvider)
   videoProvider?: VideoProvider;
 
-  @ValidateIf((o) => o.type === LessonType.VIDEO)
+  @ValidateIf((o: UpdateLessonDto) => o.type === LessonType.VIDEO)
   @IsString()
   videoRefId?: string;
 

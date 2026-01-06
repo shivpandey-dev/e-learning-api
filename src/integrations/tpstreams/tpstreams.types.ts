@@ -16,6 +16,21 @@ export interface TpstreamsCreateFolderResponse {
   title: string;
 }
 
+export interface TpstreamsCreateAssetRequest {
+  title: string;
+  description?: string;
+  folderId?: string;
+  metadata?: Record<string, any>;
+}
+
+export interface TpstreamsCreateAssetResponse {
+  id: string; // assetId
+  uploadUrl: string; // signed upload URL
+  uploadHeaders: Record<string, string>;
+  playbackUrl?: string;
+  status: string; // pending, processing, ready, etc.
+}
+
 export enum TpstreamsErrorCode {
   CONFIG_INVALID = 'CONFIG_INVALID',
   LOGIN_FAILED = 'LOGIN_FAILED',

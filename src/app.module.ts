@@ -9,6 +9,7 @@ import { LocationModule } from './location/location.module';
 import { ConfigModule } from '@nestjs/config';
 import { CoursesModule } from './courses/courses.module';
 import { PublicModule } from './public/public.module';
+import { LessonMediaModule } from './lesson-media/lesson-media.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { PublicModule } from './public/public.module';
     LocationModule,
     CoursesModule,
     PublicModule,
+    LessonMediaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

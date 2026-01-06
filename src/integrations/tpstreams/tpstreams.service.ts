@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { TpstreamsClient } from './tpstreams.client';
-import { TpstreamsCreateFolderResponse } from './tpstreams.types';
+import {
+  TpstreamsCreateFolderResponse,
+  TpstreamsCreateAssetRequest,
+} from './tpstreams.types';
 
 @Injectable()
 export class TpstreamsService {
@@ -16,5 +19,13 @@ export class TpstreamsService {
     parent?: string,
   ): Promise<TpstreamsCreateFolderResponse> {
     return this.client.createFolder({ title, parent });
+  }
+
+  async createVideoAsset(params: TpstreamsCreateAssetRequest) {
+    return this.client.createAsset(params);
+  }
+
+  async getAuthTokenForUploader(): Promise<{ token: string; orgId: string }> {
+    return this.client.getAuthToken();
   }
 }
